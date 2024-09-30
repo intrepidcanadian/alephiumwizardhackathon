@@ -60,7 +60,7 @@ export const TokenDapp: FC<{
     slytherin: '0'
   })
 
-  const {balance: alphBalance, updateBalanceForTx} = useBalance(account?.address)
+  const {balance: alphBalance, updateBalanceForTx} = useBalance()
 
   const [nodeProvider, setNodeProvider] = useState<NodeProvider | undefined>(undefined)
 
@@ -262,7 +262,6 @@ export const TokenDapp: FC<{
       (status.type === 'Confirmed' && numberOfChecks > 2) ||
       (status.type === 'TxNotFound' && numberOfChecks > 3)
     ) {
-      setOngoingTxIds(prevIds => prevIds.filter(id => id !== status.txId))
       fetchTokenBalances()
       if (account) {
         updateBalanceForTx(account.address)
