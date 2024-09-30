@@ -4,29 +4,30 @@
 
 import { RunScriptResult, DeployContractExecutionResult } from "@alephium/cli";
 import { NetworkId } from "@alephium/web3";
-import { TokenFaucet, TokenFaucetInstance } from ".";
+import {
+  TokenFaucet,
+  TokenFaucetInstance,
+  OracleConsumer,
+  OracleConsumerInstance,
+} from ".";
+import { default as mainnetDeployments } from "../../deployments/.deployments.mainnet.json";
 import { default as testnetDeployments } from "../.deployments.testnet.json";
 import { default as devnetDeployments } from "../.deployments.devnet.json";
 
 export type Deployments = {
   deployerAddress: string;
   contracts: {
-    TokenFaucet: DeployContractExecutionResult<TokenFaucetInstance>;
     TokenFaucet_TokenFaucet1?: DeployContractExecutionResult<TokenFaucetInstance>;
     TokenFaucet_TokenFaucet2?: DeployContractExecutionResult<TokenFaucetInstance>;
     TokenFaucet_TokenFaucet3?: DeployContractExecutionResult<TokenFaucetInstance>;
     TokenFaucet_TokenFaucet4?: DeployContractExecutionResult<TokenFaucetInstance>;
+    OracleConsumer?: DeployContractExecutionResult<OracleConsumerInstance>;
+    TokenFaucet?: DeployContractExecutionResult<TokenFaucetInstance>;
   };
 };
 
 function toDeployments(json: any): Deployments {
   const contracts = {
-    TokenFaucet: {
-      ...json.contracts["TokenFaucet"],
-      contractInstance: TokenFaucet.at(
-        json.contracts["TokenFaucet"].contractInstance.address
-      ),
-    },
     TokenFaucet_TokenFaucet1:
       json.contracts["TokenFaucet:TokenFaucet1"] === undefined
         ? undefined
@@ -67,6 +68,24 @@ function toDeployments(json: any): Deployments {
                 .address
             ),
           },
+    OracleConsumer:
+      json.contracts["OracleConsumer"] === undefined
+        ? undefined
+        : {
+            ...json.contracts["OracleConsumer"],
+            contractInstance: OracleConsumer.at(
+              json.contracts["OracleConsumer"].contractInstance.address
+            ),
+          },
+    TokenFaucet:
+      json.contracts["TokenFaucet"] === undefined
+        ? undefined
+        : {
+            ...json.contracts["TokenFaucet"],
+            contractInstance: TokenFaucet.at(
+              json.contracts["TokenFaucet"].contractInstance.address
+            ),
+          },
   };
   return {
     ...json,
@@ -79,7 +98,9 @@ export function loadDeployments(
   deployerAddress?: string
 ): Deployments {
   const deployments =
-    networkId === "testnet"
+    networkId === "mainnet"
+      ? mainnetDeployments
+      : networkId === "testnet"
       ? testnetDeployments
       : networkId === "devnet"
       ? devnetDeployments

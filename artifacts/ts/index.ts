@@ -2,5 +2,6 @@
 /* tslint:disable */
 /* eslint-disable */
 
+export * from "./OracleConsumer";
 export * from "./TokenFaucet";
 export * from "./scripts";

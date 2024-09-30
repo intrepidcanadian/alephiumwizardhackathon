@@ -3,6 +3,8 @@ import { FC, useState } from 'react'
 // import styles from '../styles/Home.module.css'
 import styles from '../styles/TokenDapp.module.css'
 import { withdrawToken, withdrawTokenGasless, withdrawAllTokensGaslessSequential } from '@/services/token.service'
+import { getLastPrice, getLastTimestamp, getMessage, getLastPriceInCents, getAlphPrice } from '@/services/oracle.services'
+
 
 import { TxStatus } from './TxStatus'
 import { node } from "@alephium/web3"
@@ -22,13 +24,34 @@ export const TokenDapp: FC<{
   const [ongoingTxIds, setOngoingTxIds] = useState<string[]>([])
   const [isWithdrawing, setIsWithdrawing] = useState(false)
 
+  const [oracleData, setOracleData] = useState({
+    lastPrice: '',
+    lastTimestamp: '',
+    message: '',
+    lastPriceInCents: '',
+  })
+
+  const formatPrice = (price: string): string => {
+    const num = Number(price) / 100000000; // Assuming 8 decimal points
+    return num.toFixed(8);
+  }
+  
+  const decodeMessage = (hexMessage: string): string => {
+    const bytes = new Uint8Array(hexMessage.match(/.{1,2}/g)!.map(byte => parseInt(byte, 16)));
+    return new TextDecoder().decode(bytes);
+  }
+  
+  const formatTimestamp = (timestamp: string): string => {
+    const date = new Date(Number(timestamp));
+    return date.toLocaleString(); // This will format the date according to the user's locale
+  }
+
+
 
   const audioRef = useRef<HTMLAudioElement | null>(null)
 
   const [withdrawAmount, setWithdrawAmount] = useState('')
   const [ongoingTxId, setOngoingTxId] = useState<string>()
-
-  const {balance: alphBalance, updateBalanceForTx} = useBalance(account?.address)
 
   const [tokenBalances, setTokenBalances] = useState({
     gryffindor: '0',
@@ -36,6 +59,8 @@ export const TokenDapp: FC<{
     ravenclaw: '0',
     slytherin: '0'
   })
+
+  const {balance: alphBalance, updateBalanceForTx} = useBalance(account?.address)
 
   const [nodeProvider, setNodeProvider] = useState<NodeProvider | undefined>(undefined)
 
@@ -73,6 +98,7 @@ export const TokenDapp: FC<{
 
     initializeNodeProvider()
   }, [signer, nodeProvider, config.nodeUrl])
+
 
   const fetchTokenBalances = useCallback(async () => {
     if (account && connectionStatus === 'connected' && nodeProvider) {
@@ -122,6 +148,69 @@ export const TokenDapp: FC<{
       }
     }
   }
+
+  const fetchOracleData = useCallback(async () => {
+    try {
+      const [lastPrice, lastTimestamp, message, lastPriceInCents] = await Promise.all([
+        getLastPrice(),
+        getLastTimestamp(),
+        getMessage(),
+        getLastPriceInCents(),
+      ])
+      setOracleData({
+        lastPrice: formatPrice(lastPrice.toString()),
+        lastTimestamp: formatTimestamp(lastTimestamp.toString()),
+        message: decodeMessage(message),
+        lastPriceInCents: lastPriceInCents.toString(),
+      })
+    } catch (error) {
+      console.error('Error fetching oracle data:', error)
+    }
+  }, [])
+
+  useEffect(() => {
+    fetchOracleData()
+  }, [fetchOracleData])
+
+  const handleUpdateAlphPrice = async () => {
+    if (signer) {
+      try {
+        const txId = await getAlphPrice(signer)
+        console.log('ALPH price update transaction submitted:', txId)
+        // You might want to add this txId to your ongoingTxIds state
+        setOngoingTxIds(prev => [...prev, txId])
+      } catch (error) {
+        console.error('Error updating ALPH price:', error)
+      }
+    }
+  }
+
+  const renderOracleSection = () => (
+    <div className={styles.infoSection}>
+      <h3 className={styles.sectionTitle}>Oracle Data</h3>
+      <div className={styles.infoGrid}>
+        <div className={styles.infoItem}>
+          <div className={styles.label}>Last Price:</div>
+          <div className={styles.value}>{oracleData.lastPrice}</div>
+        </div>
+        <div className={styles.infoItem}>
+          <div className={styles.label}>Last Timestamp:</div>
+          <div className={styles.value}>{oracleData.lastTimestamp}</div>
+        </div>
+        <div className={styles.infoItem}>
+          <div className={styles.label}>Message:</div>
+          <div className={styles.value}>{oracleData.message}</div>
+        </div>
+        <div className={styles.infoItem}>
+          <div className={styles.label}>Last Price in Cents:</div>
+          <div className={styles.value}>{oracleData.lastPriceInCents}</div>
+        </div>
+      </div>
+      <button onClick={handleUpdateAlphPrice} className={styles.button}>
+        Update ALPH Price
+      </button>
+    </div>
+  )
 
   const renderNormalForm = () => (
     <form onSubmit={handleWithdrawSubmit} className={styles.form}>
@@ -224,18 +313,22 @@ export const TokenDapp: FC<{
         <div className={styles.infoItem}>
           <div className={styles.label}>Gryffindor Balance:</div>
           <div className={styles.value}>{tokenBalances.gryffindor}</div>
+   
         </div>
         <div className={styles.infoItem}>
           <div className={styles.label}>Hufflepuff Balance:</div>
           <div className={styles.value}>{tokenBalances.hufflepuff}</div>
+         
         </div>
         <div className={styles.infoItem}>
           <div className={styles.label}>Ravenclaw Balance:</div>
           <div className={styles.value}>{tokenBalances.ravenclaw}</div>
+    
         </div>
         <div className={styles.infoItem}>
           <div className={styles.label}>Slytherin Balance:</div>
           <div className={styles.value}>{tokenBalances.slytherin}</div>
+       
         </div>
       </div>
     </div>
@@ -263,7 +356,7 @@ export const TokenDapp: FC<{
       <h2 className={`${styles.title} ${isWizardMode ? styles.wizardModeTitle : ''}`}>Token Faucet {config.network}</h2>
       {renderAccountInfo()}
       {renderTokenBalances()}
-
+      {renderOracleSection()}
       {isWizardMode ? renderWizardForm() : renderNormalForm()}
     </div>
   )

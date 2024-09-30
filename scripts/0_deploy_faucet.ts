@@ -3,25 +3,34 @@ import { Settings } from '../alephium.config'
 import { TokenFaucet } from '../artifacts/ts'
 import { PrivateKeyWallet } from '@alephium/web3-wallet'
 import { DUST_AMOUNT } from '@alephium/web3'
+import dotenv from 'dotenv'
 
 import { deriveHDWalletPrivateKey } from '@alephium/web3-wallet';
 import { publicKeyFromPrivateKey, addressFromPublicKey } from '@alephium/web3';
+
+dotenv.config()
+
 
 const deployFaucet: DeployFunction<Settings> = async (
   deployer: Deployer,
   network: Network<Settings>
 ): Promise<void> => {
   const issueTokenAmount = network.settings.issueTokenAmount
-  const mnemonic = "wizards are the best"
+  // const mnemonic = "wizards are the best"
 
-  const devnetPrivateKeys = [
-    deriveHDWalletPrivateKey(mnemonic, 'default', 0)
-  ];
+  // const devnetPrivateKeys = [
+  //   deriveHDWalletPrivateKey(mnemonic, 'default', 0)
+  // ];
 
-  const publicKey = publicKeyFromPrivateKey(devnetPrivateKeys[0], 'default');
-  const address = addressFromPublicKey(publicKey, 'default');
+  // const publicKey = publicKeyFromPrivateKey(devnetPrivateKeys[0], 'default');
+  // const address = addressFromPublicKey(publicKey, 'default');
 
-  const signer = new PrivateKeyWallet({ privateKey: devnetPrivateKeys[0], nodeProvider: deployer.provider })
+  // const signer = new PrivateKeyWallet({ privateKey: devnetPrivateKeys[0], nodeProvider: deployer.provider })
+
+  const mainnetPrivateKeys = process.env.MAINNET_PRIVATE_KEYS
+  if (!mainnetPrivateKeys) throw new Error("MAINNET_PRIVATE_KEYS is not defined")
+
+  const signer = new PrivateKeyWallet({ privateKey: mainnetPrivateKeys, nodeProvider: deployer.provider })
   
   const oneAlph = BigInt(10**18) 
   const depositAmount = oneAlph * BigInt(1)

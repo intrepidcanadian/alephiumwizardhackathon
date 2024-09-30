@@ -1,5 +1,5 @@
 {
-  "fullNodeVersion": "v3.6.3",
+  "fullNodeVersion": "v3.7.0",
   "compilerOptionsUsed": {
     "ignoreUnusedConstantsWarnings": false,
     "ignoreUnusedVariablesWarnings": false,
@@ -10,15 +10,33 @@
     "ignoreUnusedFunctionReturnWarnings": false
   },
   "infos": {
+    "DIAOracleValue": {
+      "sourceFile": "oracle.ral",
+      "sourceCodeHash": "b98c917456dc7f1a2eac97203220d729341ca368d1cf910faf47bd8d3d329584",
+      "bytecodeDebugPatch": "",
+      "codeHashDebug": ""
+    },
+    "IDIAOracle": {
+      "sourceFile": "oracle.ral",
+      "sourceCodeHash": "b98c917456dc7f1a2eac97203220d729341ca368d1cf910faf47bd8d3d329584",
+      "bytecodeDebugPatch": "",
+      "codeHashDebug": ""
+    },
     "IFungibleToken": {
       "sourceFile": "../node_modules/@alephium/web3/std/fungible_token_interface.ral",
       "sourceCodeHash": "62910bf11e1eeb6cb2fd468626ff606a9b06306b2b81590c3b10f6deb5966bde",
       "bytecodeDebugPatch": "",
       "codeHashDebug": ""
     },
+    "OracleConsumer": {
+      "sourceFile": "oracle.ral",
+      "sourceCodeHash": "b98c917456dc7f1a2eac97203220d729341ca368d1cf910faf47bd8d3d329584",
+      "bytecodeDebugPatch": "",
+      "codeHashDebug": "2de55e6a8883d50b84fa979c6697adec61d6451f61070716fbd9131ccc439329"
+    },
     "TokenFaucet": {
       "sourceFile": "token.ral",
-      "sourceCodeHash": "ffc76925d33b9448576fb770a82806b9da172b31761e890bd873aeebfc332e1c",
+      "sourceCodeHash": "d9c5902444f841b87e572d73eb68237c3225e9742a5c4c80fd900278e034dc3a",
       "bytecodeDebugPatch": "=20-2+71=2-3+8=1-2=3-1+440b3=111-1+4=10+a0007e02175468652063757272656e742062616c616e63652069732000=178",
       "codeHashDebug": "dc0e06fd1a2fb592ce20e057fd2d214ba078e42906b03930b83d6069e3a0de5c"
     },

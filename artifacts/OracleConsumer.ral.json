@@ -1,0 +1,74 @@
+{
+  "version": "v3.6.3",
+  "name": "OracleConsumer",
+  "bytecode": "04054061406f407d408b409f01000003001bd30f7c932a1408414c50482f5553440d0ece00d4a0e6c231170117001600a1001601a101a00013800f42402d170216020e2e0c2f4c031411504c4154464f524d204953205245414459a1024a02140a414c4c2041424f415244a102010000000103d38138fbcba00002010000000103d31171f18ca00102010000000103d3c104ac09a00202010000000105d335aca2dfa00013800f42402d02",
+  "codeHash": "2de55e6a8883d50b84fa979c6697adec61d6451f61070716fbd9131ccc439329",
+  "fieldsSig": {
+    "names": [
+      "oracle",
+      "lastPrice",
+      "lastTimestamp",
+      "message"
+    ],
+    "types": [
+      "IDIAOracle",
+      "U256",
+      "U256",
+      "ByteVec"
+    ],
+    "isMutable": [
+      false,
+      true,
+      true,
+      true
+    ]
+  },
+  "eventsSig": [],
+  "functions": [
+    {
+      "name": "getAlphPrice",
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
+      "returnTypes": []
+    },
+    {
+      "name": "getLastPrice",
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
+      "returnTypes": [
+        "U256"
+      ]
+    },
+    {
+      "name": "getLastTimestamp",
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
+      "returnTypes": [
+        "U256"
+      ]
+    },
+    {
+      "name": "getMessage",
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
+      "returnTypes": [
+        "ByteVec"
+      ]
+    },
+    {
+      "name": "getLastPriceInCents",
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
+      "returnTypes": [
+        "U256"
+      ]
+    }
+  ],
+  "constants": [],
+  "enums": []
+}

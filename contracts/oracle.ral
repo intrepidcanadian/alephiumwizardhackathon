@@ -1,0 +1,48 @@
+struct DIAOracleValue {
+  mut value: U256,
+  mut timestamp: U256
+}
+
+Interface IDIAOracle {
+  pub fn getValue(key: ByteVec) -> DIAOracleValue
+}
+
+Contract OracleConsumer(
+    oracle: IDIAOracle,
+    mut lastPrice: U256,
+    mut lastTimestamp: U256,
+    mut message: ByteVec
+) {
+    @using(updateFields = true, checkExternalCaller = false)
+    pub fn getAlphPrice() -> () {
+        let result = oracle.getValue(b`ALPH/USD`)
+        lastPrice = result.value
+        lastTimestamp = result.timestamp
+        
+        let priceInCents = lastPrice / 1_000_000
+        
+        if (priceInCents % 2 == 0) {
+            message = b`PLATFORM IS READY`
+        } else {
+            message = b`ALL ABOARD`
+        }
+        
+    }
+
+    pub fn getLastPrice() -> U256 {
+        return lastPrice
+    }
+
+    pub fn getLastTimestamp() -> U256 {
+        return lastTimestamp
+    }
+
+    pub fn getMessage() -> ByteVec {
+        return message
+    }
+
+    pub fn getLastPriceInCents() -> U256 {
+        return lastPrice / 1_000_000
+    }
+
+}

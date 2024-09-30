@@ -34,6 +34,7 @@ import {
 } from "@alephium/web3";
 import { default as TokenFaucetContractJson } from "../TokenFaucet.ral.json";
 import { getContractByCodeHash } from "./contracts";
+import { DIAOracleValue, AllStructs } from "./types";
 
 // Custom types for the contract
 export namespace TokenFaucetTypes {
@@ -155,7 +156,7 @@ class Factory extends ContractFactory<
     return encodeContractFields(
       addStdIdToFields(this.contract, fields),
       this.contract.fieldsSig,
-      []
+      AllStructs
     );
   }
 
@@ -261,7 +262,7 @@ export const TokenFaucet = new Factory(
     TokenFaucetContractJson,
     "=20-2+71=2-3+8=1-2=3-1+440b3=111-1+4=10+a0007e02175468652063757272656e742062616c616e63652069732000=178",
     "dc0e06fd1a2fb592ce20e057fd2d214ba078e42906b03930b83d6069e3a0de5c",
-    []
+    AllStructs
   )
 );
 

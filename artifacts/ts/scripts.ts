@@ -14,14 +14,18 @@ import {
 import { getContractByCodeHash } from "./contracts";
 import { default as WithdrawScriptJson } from "../Withdraw.ral.json";
 import { default as WithdrawGaslessScriptJson } from "../WithdrawGasless.ral.json";
+import { DIAOracleValue, AllStructs } from "./types";
 
 export const Withdraw = new ExecutableScript<{
   token: HexString;
   amount: bigint;
-}>(Script.fromJson(WithdrawScriptJson, "", []), getContractByCodeHash);
+}>(Script.fromJson(WithdrawScriptJson, "", AllStructs), getContractByCodeHash);
 
 export const WithdrawGasless = new ExecutableScript<{
   token: HexString;
   to: Address;
   amount: bigint;
-}>(Script.fromJson(WithdrawGaslessScriptJson, "", []), getContractByCodeHash);
+}>(
+  Script.fromJson(WithdrawGaslessScriptJson, "", AllStructs),
+  getContractByCodeHash
+);

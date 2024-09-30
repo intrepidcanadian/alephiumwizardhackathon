@@ -51,7 +51,8 @@ function getTokenFaucetConfig(): TokenFaucetConfig {
     slytherin: slytherinFaucet?.contractId
   }
 
-  const nodeUrl = process.env.NEXT_PUBLIC_NODE_URL || 'http://localhost:22973' 
+  // const nodeUrl = process.env.NEXT_PUBLIC_NODE_URL || 'http://localhost:22973' 
+  const nodeUrl = 'https://node.mainnet.alephium.org'
 
   return { network, groupIndex: groupIndex ?? 0, tokenFaucetAddresses: {
     gryffindor: tokenFaucetAddresses.gryffindor ?? '',
