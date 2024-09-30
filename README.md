@@ -2,6 +2,9 @@
 
 ## Overview
 
+- Video Demo: https://www.loom.com/share/37eaf7de10b948ccbec36579050e435a
+- Website: https://alephiumwizardhackathon.vercel.app/
+
 This project is a NextJS-based web application that implements a token faucet for Hogwarts House tokens on the Alephium blockchain. 
 
 - An oracle is used to get the price of ALPH in USD and if it is even price (in cents) then a message is updated to "PLATFORM IS READY" and if it is odd (in cents) then a message is updated to "ALL ABOARD"
