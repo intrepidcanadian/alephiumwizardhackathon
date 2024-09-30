@@ -1,71 +1,36 @@
-This is a Alephium template project for the
-[Next.js](https://nextjs.org/) framework, it is bootstrapped with the
-following command:
+# Alephium NextJS Template: Hogwarts House Token Faucet
 
+## Overview
+
+This project is a NextJS-based web application that implements a token faucet for Hogwarts House tokens on the Alephium blockchain. 
+
+- It serves as a template and demonstration of how to create gasless transactions on Alephium (i.e. the user doesn't need to pay for gas fees and the gas fees are refunded to them)
+- It demonstrates how to fund a contract with alephium so that it can be used to cover gas fees for users
+- It demonstrates how to create a private key from a mnemonic phrase and use it to deploy a smart contract. 
+- The idea is that if any mnemonic can create a private key and a public key / public address then hypothetically, data scanned from a NFC wallet can be used to create an Alephium Wallet
+- The transactions are batched together in transaction script that calls up each of the token faucet ids and sends them to the user
+
+## Features
+
+- **Token Faucet**: Non-wizards can request and receive Gryffindor tokens.
+- **Wizard Mode**: In wizard mode, (1) wizards can request and recieve all house tokens (Gryffindor, Hufflepuff, Ravenclaw, and Slytherin) & (2) the tokens are recieved GAS-LESS & (3) Music and animation plays to activate WIZARD MODE.
+- **Deployment of Contract using Mnemonic**: The contract is deployed using a mnemonic "Wizards are the best". This can be substituted with scanned NFC data from a passport to create a wallet on Alephium..
+
+```javascript
+
+const mnemonic = "wizards are the best"
+
+const devnetPrivateKeys = [
+  deriveHDWalletPrivateKey(mnemonic, 'default', 0)
+];
+
+const publicKey = publicKeyFromPrivateKey(devnetPrivateKeys[0], 'default');
+const address = addressFromPublicKey(publicKey, 'default');
+
+console.log('Private Key:', devnetPrivateKeys);
+console.log('Public Key:', publicKey);
+console.log('Address:', address);
 ```
-npx @alephium/cli init $project-name --template nextjs
-```
+- **Funding of Contracts**: Each faucet contract is funded with alephium so that it can cover gas fee for users
 
-This template project demonstrates how to implement a simple token
-faucet and expose it with a Web UI using Next.js.
 
-## Getting Started
-
-### Install
-
-```
-npm install
-```
-
-### Start a local devnet for testing and development
-
-```
-npx @alephium/cli@latest devnet start
-```
-
-### Deploy the token faucet contract
-
-```bash
-# In this case devnet
-npx @alephium/cli deploy -n devnet
-```
-
-This will compile and deploy the token faucet contracts to all of the
-4 groups on devnet.
-
-Before deployment, you might want to just compile and test the
-contracts first:
-
-```bash
-# Compile
-npx @alephium/cli compile
-
-# Test
-npx @alephium/cli test
-```
-
-### Run the development server
-
-```bash
-npm run dev
-# or
-yarn dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser
-to see the token faucet application.
-
-Download the [Alephium Extension Wallet](https://github.com/alephium/extension-wallet)
-to interact with the application.
-
-## Learn More
-
-To learn more about smart contract development on Alephium, take a
-look at the following resources:
-
-- [Alephium Web3 SDK Guide](https://docs.alephium.org/dapps/alephium-web3/) - Learn about Alephium Web3 SDK
-- [Ralph Language](https://docs.alephium.org/ralph/getting-started) - A guide to the Ralph programming language
-
-You can check out the [Alephium GitHub
-repositories](https://github.com/alephium) for more information - your
-feedback and contributions are welcome!
