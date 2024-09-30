@@ -51,6 +51,7 @@ Contract TokenFaucet(
     // The function is annotated with `updateFields = true` as it changes the contract fields.
     // The function is annotated as using contract assets as it does.
     // The function is annotated with `checkExternalCaller = false` as there is no need to check the external caller.
+    
     @using(assetsInContract = true, updateFields = true, checkExternalCaller = false)
     pub fn withdraw(amount: U256) -> () {
         // Debug events can be helpful for error analysis
@@ -66,4 +67,27 @@ Contract TokenFaucet(
         // Emit the event defined earlier.
         emit Withdraw(callerAddress!(), amount)
     }
+
+    @using(preapprovedAssets = true, assetsInContract = true, checkExternalCaller = false)
+    pub fn deposit(amount: U256) -> () {
+       transferTokenToSelf!(callerAddress!(), ALPH, amount)
+    }
+
+    @using(assetsInContract = true, checkExternalCaller = false)
+    pub fn withdrawGasless(to: Address, amount: U256) -> () {
+        payGasFee!(selfAddress!(), txGasFee!())
+        withdrawInternal(to, amount)
+    }
+
+     // Internal withdraw function
+     @using(assetsInContract = true, updateFields = true)
+    fn withdrawInternal(to: Address, amount: U256) -> () {
+        assert!(amount <= 2, ErrorCodes.InvalidWithdrawAmount)
+        transferTokenFromSelf!(to, selfTokenId!(), amount)
+        balance = balance - amount
+
+        emit Withdraw(to, amount)
+    }
+
+    
 }

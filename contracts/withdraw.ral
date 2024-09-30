@@ -6,3 +6,7 @@ TxScript Withdraw(token: TokenFaucet, amount: U256) {
     // Call token contract's withdraw function.
     token.withdraw(amount)
 }
+
+TxScript WithdrawGasless(token: TokenFaucet, to: Address, amount: U256) {
+    token.withdrawGasless(to, amount)
+}

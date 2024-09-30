@@ -21,6 +21,7 @@ import {
   callMethod,
   multicallMethods,
   fetchContractState,
+  Asset,
   ContractInstance,
   getContractEventsCurrentCount,
   TestContractParamsWithoutMaps,
@@ -73,6 +74,18 @@ export namespace TokenFaucetTypes {
       params: CallContractParams<{ amount: bigint }>;
       result: CallContractResult<null>;
     };
+    deposit: {
+      params: CallContractParams<{ amount: bigint }>;
+      result: CallContractResult<null>;
+    };
+    withdrawGasless: {
+      params: CallContractParams<{ to: Address; amount: bigint }>;
+      result: CallContractResult<null>;
+    };
+    withdrawInternal: {
+      params: CallContractParams<{ to: Address; amount: bigint }>;
+      result: CallContractResult<null>;
+    };
   }
   export type CallMethodParams<T extends keyof CallMethodTable> =
     CallMethodTable[T]["params"];
@@ -86,10 +99,9 @@ export namespace TokenFaucetTypes {
       ? CallMethodTable[MaybeName]["result"]
       : undefined;
   };
-  export type MulticallReturnType<Callss extends MultiCallParams[]> =
-    Callss["length"] extends 1
-      ? MultiCallResults<Callss[0]>
-      : { [index in keyof Callss]: MultiCallResults<Callss[index]> };
+  export type MulticallReturnType<Callss extends MultiCallParams[]> = {
+    [index in keyof Callss]: MultiCallResults<Callss[index]>;
+  };
 
   export interface SignExecuteMethodTable {
     getSymbol: {
@@ -114,6 +126,18 @@ export namespace TokenFaucetTypes {
     };
     withdraw: {
       params: SignExecuteContractMethodParams<{ amount: bigint }>;
+      result: SignExecuteScriptTxResult;
+    };
+    deposit: {
+      params: SignExecuteContractMethodParams<{ amount: bigint }>;
+      result: SignExecuteScriptTxResult;
+    };
+    withdrawGasless: {
+      params: SignExecuteContractMethodParams<{ to: Address; amount: bigint }>;
+      result: SignExecuteScriptTxResult;
+    };
+    withdrawInternal: {
+      params: SignExecuteContractMethodParams<{ to: Address; amount: bigint }>;
       result: SignExecuteScriptTxResult;
     };
   }
@@ -191,15 +215,52 @@ class Factory extends ContractFactory<
     ): Promise<TestContractResultWithoutMaps<null>> => {
       return testMethod(this, "withdraw", params, getContractByCodeHash);
     },
+    deposit: async (
+      params: TestContractParamsWithoutMaps<
+        TokenFaucetTypes.Fields,
+        { amount: bigint }
+      >
+    ): Promise<TestContractResultWithoutMaps<null>> => {
+      return testMethod(this, "deposit", params, getContractByCodeHash);
+    },
+    withdrawGasless: async (
+      params: TestContractParamsWithoutMaps<
+        TokenFaucetTypes.Fields,
+        { to: Address; amount: bigint }
+      >
+    ): Promise<TestContractResultWithoutMaps<null>> => {
+      return testMethod(this, "withdrawGasless", params, getContractByCodeHash);
+    },
+    withdrawInternal: async (
+      params: TestContractParamsWithoutMaps<
+        TokenFaucetTypes.Fields,
+        { to: Address; amount: bigint }
+      >
+    ): Promise<TestContractResultWithoutMaps<null>> => {
+      return testMethod(
+        this,
+        "withdrawInternal",
+        params,
+        getContractByCodeHash
+      );
+    },
   };
+
+  stateForTest(
+    initFields: TokenFaucetTypes.Fields,
+    asset?: Asset,
+    address?: string
+  ) {
+    return this.stateForTest_(initFields, asset, address, undefined);
+  }
 }
 
 // Use this object to test and deploy the contract
 export const TokenFaucet = new Factory(
   Contract.fromJson(
     TokenFaucetContractJson,
-    "=20-2+67=101+3a0007e02=1+75468652063757272656e742062616c616e63652069732000=46",
-    "a3309aa3a0dbd0c53b67a0c422316dcbc0571d8fa5f9ea2ab374b5c110f4efe2",
+    "=20-2+71=2-3+8=1-2=3-1+440b3=111-1+4=10+a0007e02175468652063757272656e742062616c616e63652069732000=178",
+    "dc0e06fd1a2fb592ce20e057fd2d214ba078e42906b03930b83d6069e3a0de5c",
     []
   )
 );
@@ -298,6 +359,39 @@ export class TokenFaucetInstance extends ContractInstance {
         getContractByCodeHash
       );
     },
+    deposit: async (
+      params: TokenFaucetTypes.CallMethodParams<"deposit">
+    ): Promise<TokenFaucetTypes.CallMethodResult<"deposit">> => {
+      return callMethod(
+        TokenFaucet,
+        this,
+        "deposit",
+        params,
+        getContractByCodeHash
+      );
+    },
+    withdrawGasless: async (
+      params: TokenFaucetTypes.CallMethodParams<"withdrawGasless">
+    ): Promise<TokenFaucetTypes.CallMethodResult<"withdrawGasless">> => {
+      return callMethod(
+        TokenFaucet,
+        this,
+        "withdrawGasless",
+        params,
+        getContractByCodeHash
+      );
+    },
+    withdrawInternal: async (
+      params: TokenFaucetTypes.CallMethodParams<"withdrawInternal">
+    ): Promise<TokenFaucetTypes.CallMethodResult<"withdrawInternal">> => {
+      return callMethod(
+        TokenFaucet,
+        this,
+        "withdrawInternal",
+        params,
+        getContractByCodeHash
+      );
+    },
   };
 
   transact = {
@@ -330,6 +424,23 @@ export class TokenFaucetInstance extends ContractInstance {
       params: TokenFaucetTypes.SignExecuteMethodParams<"withdraw">
     ): Promise<TokenFaucetTypes.SignExecuteMethodResult<"withdraw">> => {
       return signExecuteMethod(TokenFaucet, this, "withdraw", params);
+    },
+    deposit: async (
+      params: TokenFaucetTypes.SignExecuteMethodParams<"deposit">
+    ): Promise<TokenFaucetTypes.SignExecuteMethodResult<"deposit">> => {
+      return signExecuteMethod(TokenFaucet, this, "deposit", params);
+    },
+    withdrawGasless: async (
+      params: TokenFaucetTypes.SignExecuteMethodParams<"withdrawGasless">
+    ): Promise<TokenFaucetTypes.SignExecuteMethodResult<"withdrawGasless">> => {
+      return signExecuteMethod(TokenFaucet, this, "withdrawGasless", params);
+    },
+    withdrawInternal: async (
+      params: TokenFaucetTypes.SignExecuteMethodParams<"withdrawInternal">
+    ): Promise<
+      TokenFaucetTypes.SignExecuteMethodResult<"withdrawInternal">
+    > => {
+      return signExecuteMethod(TokenFaucet, this, "withdrawInternal", params);
     },
   };
 

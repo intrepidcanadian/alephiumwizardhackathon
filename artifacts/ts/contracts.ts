@@ -10,10 +10,7 @@ export function getContractByCodeHash(codeHash: string): Contract {
   if (contracts === undefined) {
     contracts = [TokenFaucet];
   }
-  const c = contracts.find(
-    (c) =>
-      c.contract.codeHash === codeHash || c.contract.codeHashDebug === codeHash
-  );
+  const c = contracts.find((c) => c.contract.hasCodeHash(codeHash));
   if (c === undefined) {
     throw new Error("Unknown code with code hash: " + codeHash);
   }

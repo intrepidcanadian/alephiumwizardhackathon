@@ -12,6 +12,10 @@ export type Deployments = {
   deployerAddress: string;
   contracts: {
     TokenFaucet: DeployContractExecutionResult<TokenFaucetInstance>;
+    TokenFaucet_TokenFaucet1?: DeployContractExecutionResult<TokenFaucetInstance>;
+    TokenFaucet_TokenFaucet2?: DeployContractExecutionResult<TokenFaucetInstance>;
+    TokenFaucet_TokenFaucet3?: DeployContractExecutionResult<TokenFaucetInstance>;
+    TokenFaucet_TokenFaucet4?: DeployContractExecutionResult<TokenFaucetInstance>;
   };
 };
 
@@ -23,6 +27,46 @@ function toDeployments(json: any): Deployments {
         json.contracts["TokenFaucet"].contractInstance.address
       ),
     },
+    TokenFaucet_TokenFaucet1:
+      json.contracts["TokenFaucet:TokenFaucet1"] === undefined
+        ? undefined
+        : {
+            ...json.contracts["TokenFaucet:TokenFaucet1"],
+            contractInstance: TokenFaucet.at(
+              json.contracts["TokenFaucet:TokenFaucet1"].contractInstance
+                .address
+            ),
+          },
+    TokenFaucet_TokenFaucet2:
+      json.contracts["TokenFaucet:TokenFaucet2"] === undefined
+        ? undefined
+        : {
+            ...json.contracts["TokenFaucet:TokenFaucet2"],
+            contractInstance: TokenFaucet.at(
+              json.contracts["TokenFaucet:TokenFaucet2"].contractInstance
+                .address
+            ),
+          },
+    TokenFaucet_TokenFaucet3:
+      json.contracts["TokenFaucet:TokenFaucet3"] === undefined
+        ? undefined
+        : {
+            ...json.contracts["TokenFaucet:TokenFaucet3"],
+            contractInstance: TokenFaucet.at(
+              json.contracts["TokenFaucet:TokenFaucet3"].contractInstance
+                .address
+            ),
+          },
+    TokenFaucet_TokenFaucet4:
+      json.contracts["TokenFaucet:TokenFaucet4"] === undefined
+        ? undefined
+        : {
+            ...json.contracts["TokenFaucet:TokenFaucet4"],
+            contractInstance: TokenFaucet.at(
+              json.contracts["TokenFaucet:TokenFaucet4"].contractInstance
+                .address
+            ),
+          },
   };
   return {
     ...json,
@@ -43,7 +87,7 @@ export function loadDeployments(
   if (deployments === undefined) {
     throw Error("The contract has not been deployed to the " + networkId);
   }
-  const allDeployments = Array.isArray(deployments)
+  const allDeployments: any[] = Array.isArray(deployments)
     ? deployments
     : [deployments];
   if (deployerAddress === undefined) {

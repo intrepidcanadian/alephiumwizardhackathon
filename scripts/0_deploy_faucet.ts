@@ -1,29 +1,64 @@
 import { Deployer, DeployFunction, Network } from '@alephium/cli'
 import { Settings } from '../alephium.config'
 import { TokenFaucet } from '../artifacts/ts'
+import { PrivateKeyWallet } from '@alephium/web3-wallet'
+import { DUST_AMOUNT } from '@alephium/web3'
 
-// This deploy function will be called by cli deployment tool automatically
-// Note that deployment scripts should prefixed with numbers (starting from 0)
+import { deriveHDWalletPrivateKey } from '@alephium/web3-wallet';
+import { publicKeyFromPrivateKey, addressFromPublicKey } from '@alephium/web3';
+
 const deployFaucet: DeployFunction<Settings> = async (
   deployer: Deployer,
   network: Network<Settings>
 ): Promise<void> => {
-  // Get settings
   const issueTokenAmount = network.settings.issueTokenAmount
-  const result = await deployer.deployContract(TokenFaucet, {
-    // The amount of token to be issued
-    issueTokenAmount: issueTokenAmount,
-    // The initial states of the faucet contract
-    initialFields: {
-      symbol: Buffer.from('TF', 'utf8').toString('hex'),
-      name: Buffer.from('TokenFaucet', 'utf8').toString('hex'),
-      decimals: 0n,
-      supply: issueTokenAmount,
-      balance: issueTokenAmount
-    }
-  })
-  console.log('Token faucet contract id: ' + result.contractInstance.contractId)
-  console.log('Token faucet contract address: ' + result.contractInstance.address)
+  const mnemonic = "wizards are the best"
+
+  const devnetPrivateKeys = [
+    deriveHDWalletPrivateKey(mnemonic, 'default', 0)
+  ];
+
+  const publicKey = publicKeyFromPrivateKey(devnetPrivateKeys[0], 'default');
+  const address = addressFromPublicKey(publicKey, 'default');
+
+  const signer = new PrivateKeyWallet({ privateKey: devnetPrivateKeys[0], nodeProvider: deployer.provider })
+  
+  const oneAlph = BigInt(10**18) 
+  const depositAmount = oneAlph * BigInt(1)
+
+  const faucets = [
+    { symbol: 'HP1', name: 'Gryffindor' },
+    { symbol: 'HP2', name: 'Slytherin' },
+    { symbol: 'HP3', name: 'Ravenclaw' },
+    { symbol: 'HP4', name: 'Hufflepuff' },
+  ]
+
+  for (let i = 0; i < faucets.length; i++) {
+    const { symbol, name } = faucets[i]
+    const result = await deployer.deployContract(TokenFaucet, {
+      initialFields: {
+        symbol: Buffer.from(symbol, 'utf8').toString('hex'),
+        name: Buffer.from(name, 'utf8').toString('hex'),
+        decimals: 0n,
+        supply: issueTokenAmount,
+        balance: issueTokenAmount
+      },
+      issueTokenAmount: issueTokenAmount
+    }, `TokenFaucet${i + 1}`) 
+    
+    console.log(`Token faucet contract ${i + 1} id: ${result.contractInstance.contractId}`)
+    console.log(`Token faucet contract ${i + 1} address: ${result.contractInstance.address}`)
+
+    const tokenFaucet = TokenFaucet.at(result.contractInstance.address)
+    
+    const depositTx = await tokenFaucet.transact.deposit({
+      args: { amount: depositAmount },
+      attoAlphAmount: depositAmount,
+      signer: signer
+    })
+
+    console.log(`Deposited ${depositAmount.toString()} attoALPH to ${name}`)
+  }
 }
 
 export default deployFaucet
