@@ -41,6 +41,7 @@ const Snow: React.FC = () => {
     }
 
     function moveSnowflakes() {
+      if (!canvas) return;
       for (let flake of snowflakes) {
         flake.y += flake.speed;
         flake.x += Math.sin(flake.y / 30) * 2;

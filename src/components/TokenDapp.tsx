@@ -177,7 +177,6 @@ export const TokenDapp: FC<{
       try {
         const txId = await getAlphPrice(signer)
         console.log('ALPH price update transaction submitted:', txId)
-        // You might want to add this txId to your ongoingTxIds state
         setOngoingTxIds(prev => [...prev, txId])
       } catch (error) {
         console.error('Error updating ALPH price:', error)
