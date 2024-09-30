@@ -48,7 +48,7 @@ console.log('Address:', address);
         withdrawInternal(to, amount)
     }
 ```
-- **Transaction Scripts Added**: A transaction script is added to call the withdrawGasless function for each of the token faucet contracts. The transaction script is executed with the token ids and the amount of tokens to withdraw for each contract. The transaction script is executed with the token ids and the amount of tokens to withdraw for each contract. The transaction script is executed with the token ids and the amount of tokens to withdraw for each contract. 
+- **Transaction Scripts Added**: A transaction script is added to call the withdrawGasless function for each of the token faucet contracts. The transaction script is executed with the token ids and the amount of tokens to withdraw for each contract. 
 
 ```javascript
 // this is the transaction script that is executed
@@ -70,4 +70,54 @@ export const withdrawAllTokensGaslessSequential = async (
   return results
 }
 
+```
+
+- **Oracle Added**: A oracle is deployed on mainnet. The key feature is changing the message of the Oracle contract if the price of ALPH is even or odd.
+
+```javascript
+Contract OracleConsumer(
+    oracle: IDIAOracle,
+    mut lastPrice: U256,
+    mut lastTimestamp: U256,
+    mut message: ByteVec
+) {
+    @using(updateFields = true, checkExternalCaller = false)
+    pub fn getAlphPrice() -> () {
+        let result = oracle.getValue(b`ALPH/USD`)
+        lastPrice = result.value
+        lastTimestamp = result.timestamp
+        
+        let priceInCents = lastPrice / 1_000_000
+        
+        if (priceInCents % 2 == 0) {
+            message = b`PLATFORM IS READY`
+        } else {
+            message = b`ALL ABOARD`
+        }
+        
+    }
+```
+
+- **Oracle Outputs Displayed**: Oracle outputs are displayed on the UI by viewing the state of the OracleConsumer contract through the node provider.
+
+```javascript
+export async function getLastPriceInCents(): Promise<bigint> {
+    try {
+      const result = await oracleConsumer.view.getLastPriceInCents()
+      return result.returns
+    } catch (error) {
+      console.error('Error fetching last price in cents:', error)
+      throw error
+    }
+  }
+
+  export async function getAlphPrice(signer: SignerProvider): Promise<string> {
+    try {
+      const result = await oracleConsumer.transact.getAlphPrice({signer})
+      return result.txId
+    } catch (error) {
+      console.error('Error updating ALPH price:', error)
+      throw error
+    }
+  }
 ```
