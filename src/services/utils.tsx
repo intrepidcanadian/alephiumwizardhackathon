@@ -21,8 +21,8 @@ export interface TokenFaucetConfig {
 }
 
 function getNetwork(): NetworkId {
-  const network = (process.env.NEXT_PUBLIC_NETWORK ?? 'mainnet') as NetworkId
-  return network
+  // const network = (process.env.NEXT_PUBLIC_NETWORK ?? 'mainnet') as NetworkId
+  return 'mainnet'
 }
 
 function getTokenFaucetConfig(): TokenFaucetConfig {
