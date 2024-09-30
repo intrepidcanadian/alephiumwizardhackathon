@@ -26,6 +26,7 @@ const Snow: React.FC = () => {
     }
 
     function drawSnowflakes() {
+      if (!ctx) return;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.fillStyle = 'white';
       ctx.beginPath();

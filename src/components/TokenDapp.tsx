@@ -237,7 +237,7 @@ export const TokenDapp: FC<{
 
   const renderWizardForm = () => (
     <form onSubmit={handleWithdrawSubmit} className={`${styles.form} ${styles.wizardForm}`}>
-      <p>Summon your magical tokens, wizard!</p>
+      <p>Summon your magical tokens (max 2), wizard!</p>
       <label htmlFor="wizard-withdraw-amount" className={styles.label}>Magical Amount</label>
       <input
         type="number"
@@ -353,7 +353,7 @@ export const TokenDapp: FC<{
       {ongoingTxIds.map(txId => (
         <TxStatus key={txId} txId={txId} txStatusCallback={txStatusCallback} />
       ))}
-      <h2 className={`${styles.title} ${isWizardMode ? styles.wizardModeTitle : ''}`}>Token Faucet {config.network}</h2>
+      <h2 className={`${styles.title} ${isWizardMode ? styles.wizardModeTitle : ''}`}>Intrepid Wizards and Wands Token Faucet {config.network}</h2>
       {renderAccountInfo()}
       {renderTokenBalances()}
       {renderOracleSection()}
