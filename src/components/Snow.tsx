@@ -31,7 +31,7 @@ const Snow: React.FC = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.fillStyle = 'white';
       ctx.beginPath();
-      for (let flake of snowflakes) {
+      for (const flake of snowflakes) {
         ctx.moveTo(flake.x, flake.y);
         ctx.arc(flake.x, flake.y, flake.radius, 0, Math.PI * 2, true);
       }
@@ -42,7 +42,7 @@ const Snow: React.FC = () => {
 
     function moveSnowflakes() {
       if (!canvas) return;
-      for (let flake of snowflakes) {
+      for (const flake of snowflakes) {
         flake.y += flake.speed;
         flake.x += Math.sin(flake.y / 30) * 2;
 

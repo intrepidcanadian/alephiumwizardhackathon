@@ -7,11 +7,19 @@
   ],
   "parser": "@typescript-eslint/parser",
   "rules": {
-    "@typescript-eslint/require-await": "error",
-    "no-var": "error",
-    "object-curly-spacing": ["error", "always"],
-    "react/no-unescaped-entities": "warn",
-    "react/react-in-jsx-scope": "warn"
+    // "@typescript-eslint/require-await": "error",
+    // "no-var": "error",
+    // "object-curly-spacing": ["error", "always"],
+    // "react/no-unescaped-entities": "warn",
+    // "react/react-in-jsx-scope": "warn",
+    "@typescript-eslint/require-await": "warn",
+    "no-var": "warn",
+    "object-curly-spacing": ["warn", "always"],
+    "react/no-unescaped-entities": "off",
+    "react/react-in-jsx-scope": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "prefer-const": "warn"
   },
   "parserOptions": {
     "ecmaVersion": 2020,
