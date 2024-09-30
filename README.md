@@ -4,7 +4,8 @@
 
 This project is a NextJS-based web application that implements a token faucet for Hogwarts House tokens on the Alephium blockchain. 
 
-- It serves as a template and demonstration of how to create gasless transactions on Alephium (i.e. the user doesn't need to pay for gas fees and the gas fees are refunded to them)
+- An oracle is used to get the price of ALPH in USD and if it is even price (in cents) then a message is updated to "PLATFORM IS READY" and if it is odd (in cents) then a message is updated to "ALL ABOARD"
+- It also serves as a template and demonstration of how to create gasless transactions on Alephium (i.e. the user doesn't need to pay for gas fees and the gas fees are refunded to them)
 - It demonstrates how to fund a contract with alephium so that it can be used to cover gas fees for users
 - It demonstrates how to create a private key from a mnemonic phrase and use it to deploy a smart contract. 
 - The idea is that if any mnemonic can create a private key and a public key / public address then hypothetically, data scanned from a NFC wallet can be used to create an Alephium Wallet
